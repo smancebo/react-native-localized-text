@@ -16,24 +16,31 @@ class I18N {
 
   currentLocale: string;
 
+  i18n: any;
+
   constructor() {
     this.translations = {};
     this.currentLocale = '';
+    this.i18n = i18n;
   }
 
   setTranslations(translations: object, defaultLocale: string) {
     this.translations = translations;
     this.currentLocale = defaultLocale.toString();
+    this.i18n.translations = translations;
+    this.i18n.defaultLocale = defaultLocale;
+    this.i18n.locale = defaultLocale;
   }
 
   changeCurrentLocale(locale: string) {
     this.currentLocale = locale;
+    this.i18n.defaultLocale = locale;
+    this.i18n.locale = locale;
   }
 }
 
 function setTranslations(translations: object, defaultLocale: string) {
   const instance = I18N.getInstance();
-  console.log(translations);
   instance.setTranslations(translations, defaultLocale);
 }
 
@@ -44,9 +51,7 @@ function changeCurrentLocale(locale: string) {
 
 function getI18n() {
   const instance = I18N.getInstance();
-  i18n.translations = instance.translations;
-  i18n.locale = instance.currentLocale;
-  return i18n;
+  return instance.i18n;
 }
 
 function getCurrentLocale() {
