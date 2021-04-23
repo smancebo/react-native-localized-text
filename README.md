@@ -1,2 +1,2 @@
 # react-native-localized-text
-React Native Text Translation component
+Simple to use React Native Text Translation component
