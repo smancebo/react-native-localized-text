@@ -1,17 +1,57 @@
+/* eslint-disable simple-import-sort/exports */
 //@ts-ignore
 import i18n from 'i18n-js';
 
-// CHANGE THIS TO GET THE LANGUAGE FROM THE DEVICE
-let currentLocale;
-const setTranslations = (locales: object, defaultLocale: string) => {
-  i18n.translations = locales;
-  i18n.locale = defaultLocale;
-  currentLocale = defaultLocale;
-};
-const changeCurrentLocale = (locale: string) => {
-  i18n.locale = locale;
-  currentLocale = locale;
-};
+class I18N {
+  static instance: I18N;
 
-export { changeCurrentLocale, currentLocale, setTranslations };
-export default i18n;
+  static getInstance(): I18N {
+    if (!this.instance) {
+      this.instance = new I18N();
+    }
+    return this.instance;
+  }
+
+  translations: object;
+
+  currentLocale: string;
+
+  constructor() {
+    this.translations = {};
+    this.currentLocale = '';
+  }
+
+  setTranslations(translations: object, defaultLocale: string) {
+    this.translations = translations;
+    this.currentLocale = defaultLocale.toString();
+  }
+
+  changeCurrentLocale(locale: string) {
+    this.currentLocale = locale;
+  }
+}
+
+function setTranslations(translations: object, defaultLocale: string) {
+  const instance = I18N.getInstance();
+  console.log(translations);
+  instance.setTranslations(translations, defaultLocale);
+}
+
+function changeCurrentLocale(locale: string) {
+  const instance = I18N.getInstance();
+  instance.changeCurrentLocale(locale);
+}
+
+function getI18n() {
+  const instance = I18N.getInstance();
+  i18n.translations = instance.translations;
+  i18n.locale = instance.currentLocale;
+  return i18n;
+}
+
+function getCurrentLocale() {
+  const instance = I18N.getInstance();
+  return instance.currentLocale;
+}
+
+export { setTranslations, changeCurrentLocale, getI18n, getCurrentLocale };

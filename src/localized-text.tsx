@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TextProps } from 'react-native';
 
-import i18n from './i18n';
+import { getI18n } from './i18n';
 
 export enum TextTransform {
   CAPITAL = 'capital',
@@ -62,7 +62,7 @@ const getTranslatedText = (
   locale?: string,
   interpolate?: object
 ) =>
-  i18n.t(localeKey, {
+  getI18n().t(localeKey, {
     ...(defaultValue ? { defaultValue } : {}),
     ...(locale ? { locale } : {}),
     ...(interpolate ? { ...interpolate } : {}),
