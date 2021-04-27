@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import { Text, TextProps } from 'react-native';
 
-import { getI18n } from './i18n';
+import I18n from './i18n';
 
 export enum TextTransform {
   CAPITAL = 'capital',
@@ -36,7 +36,7 @@ const capital = (text: string) =>
 const lowercase = (text: string) => text.toLowerCase();
 const uppercase = (text: string) => text.toUpperCase();
 
-const transformText = (
+export const transformText = (
   text: string,
   textTransformation: TextTransform = TextTransform.NONE
 ) => {
@@ -56,32 +56,6 @@ const transformText = (
   }
 };
 
-const getTranslatedText = (
-  localeKey: string,
-  defaultValue?: string,
-  locale?: string,
-  interpolate?: object
-) =>
-  getI18n().t(localeKey, {
-    ...(defaultValue ? { defaultValue } : {}),
-    ...(locale ? { locale } : {}),
-    ...(interpolate ? { ...interpolate } : {}),
-  });
-
-export const translate = (
-  localeKey: string,
-  textTransformation?: TextTransform,
-  options?: ITranslateOptions
-) => {
-  const { locale, defaultValue, interpolate } =
-    options || ({} as ITranslateOptions);
-
-  return transformText(
-    getTranslatedText(localeKey, defaultValue, locale, interpolate),
-    textTransformation
-  );
-};
-
 const LocalizedLabel = (props: ILocalizedLabelProps) => {
   const {
     localeKey,
@@ -91,7 +65,12 @@ const LocalizedLabel = (props: ILocalizedLabelProps) => {
     textTransform = TextTransform.NONE,
   } = props;
 
-  const text = getTranslatedText(localeKey, defaultValue, locale, interpolate);
+  const text = I18n.getInstance().getTranslatedText(
+    localeKey,
+    defaultValue,
+    locale,
+    interpolate
+  );
   return <Text {...props}>{transformText(text, textTransform)}</Text>;
 };
 
