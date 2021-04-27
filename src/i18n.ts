@@ -2,61 +2,46 @@
 //@ts-ignore
 import i18n from 'i18n-js';
 
-class I18N {
-  static instance: I18N;
-
-  static getInstance(): I18N {
-    if (!this.instance) {
-      this.instance = new I18N();
-    }
-    return this.instance;
-  }
-
-  translations: object;
-
-  currentLocale: string;
-
+class I18n {
   i18n: any;
 
-  constructor() {
-    this.translations = {};
-    this.currentLocale = '';
+  static instance: I18n;
+
+  constructor(translations?: object, defaultLocale?: string) {
+    this.init(translations, defaultLocale);
+  }
+
+  init(translations?: object, defaultLocale?: string) {
     this.i18n = i18n;
+    this.i18n.translations = translations;
+    this.i18n.locale = defaultLocale;
+    this.i18n.defaultLocale = defaultLocale;
   }
 
   setTranslations(translations: object, defaultLocale: string) {
-    this.translations = translations;
-    this.currentLocale = defaultLocale.toString();
-    this.i18n.translations = translations;
-    this.i18n.defaultLocale = defaultLocale;
-    this.i18n.locale = defaultLocale;
+    this.init(translations, defaultLocale);
+    I18n.instance = new I18n(translations, defaultLocale);
   }
 
-  changeCurrentLocale(locale: string) {
-    this.currentLocale = locale;
-    this.i18n.defaultLocale = locale;
-    this.i18n.locale = locale;
+  getTranslatedText(
+    localeKey: string,
+    defaultValue?: string,
+    locale?: string,
+    interpolate?: object
+  ) {
+    return this.i18n.t(localeKey, {
+      ...(defaultValue ? { defaultValue } : {}),
+      ...(locale ? { locale } : {}),
+      ...(interpolate ? { ...interpolate } : {}),
+    });
+  }
+
+  static getInstance() {
+    if (!I18n.instance) {
+      I18n.instance = new I18n();
+    }
+    return I18n.instance;
   }
 }
 
-function setTranslations(translations: object, defaultLocale: string) {
-  const instance = I18N.getInstance();
-  instance.setTranslations(translations, defaultLocale);
-}
-
-function changeCurrentLocale(locale: string) {
-  const instance = I18N.getInstance();
-  instance.changeCurrentLocale(locale);
-}
-
-function getI18n() {
-  const instance = I18N.getInstance();
-  return instance.i18n;
-}
-
-function getCurrentLocale() {
-  const instance = I18N.getInstance();
-  return instance.currentLocale;
-}
-
-export { setTranslations, changeCurrentLocale, getI18n, getCurrentLocale };
+export default I18n;
